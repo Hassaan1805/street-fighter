@@ -37,7 +37,7 @@ class Fighter():
     return animation_list
 
 
-  def move(self, screen_width, screen_height, surface, target, round_over):
+  def move(self, screen_width, screen_height, surface, target, round_over, player_scores):
     SPEED = 10
     GRAVITY = 2
     dx = 0
@@ -45,82 +45,88 @@ class Fighter():
     self.running = False
     self.attack_type = 0
 
-    #get keypresses
+    # Adjust speed based on score difference
+    if self.player == 1:
+        if player_scores[0] < player_scores[1]:  # Player 1 has a lower score
+            SPEED = 7  # Reduce speed for Player 1
+    elif self.player == 2:
+        if player_scores[1] < player_scores[0]:  # Player 2 has a lower score
+            SPEED = 7  # Reduce speed for Player 2
+
+    # Get keypresses
     key = pygame.key.get_pressed()
 
-    #can only perform other actions if not currently attacking
+    # Can only perform other actions if not currently attacking
     if self.attacking == False and self.alive == True and round_over == False:
-      #check player 1 controls
-      if self.player == 1:
-        #movement
-        if key[pygame.K_a]:
-          dx = -SPEED
-          self.running = True
-        if key[pygame.K_d]:
-          dx = SPEED
-          self.running = True
-        #jump
-        if key[pygame.K_w] and self.jump == False:
-          self.vel_y = -30
-          self.jump = True
-        #attack
-        if key[pygame.K_r] or key[pygame.K_t]:
-          self.attack(target)
-          #determine which attack type was used
-          if key[pygame.K_r]:
-            self.attack_type = 1
-          if key[pygame.K_t]:
-            self.attack_type = 2
+        # Check player 1 controls
+        if self.player == 1:
+            # Movement
+            if key[pygame.K_a]:
+                dx = -SPEED
+                self.running = True
+            if key[pygame.K_d]:
+                dx = SPEED
+                self.running = True
+            # Jump
+            if key[pygame.K_w] and self.jump == False:
+                self.vel_y = -30
+                self.jump = True
+            # Attack
+            if key[pygame.K_r] or key[pygame.K_t]:
+                self.attack(target)
+                # Determine which attack type was used
+                if key[pygame.K_r]:
+                    self.attack_type = 1
+                if key[pygame.K_t]:
+                    self.attack_type = 2
 
+        # Check player 2 controls
+        if self.player == 2:
+            # Movement
+            if key[pygame.K_LEFT]:
+                dx = -SPEED
+                self.running = True
+            if key[pygame.K_RIGHT]:
+                dx = SPEED
+                self.running = True
+            # Jump
+            if key[pygame.K_UP] and self.jump == False:
+                self.vel_y = -30
+                self.jump = True
+            # Attack
+            if key[pygame.K_KP1] or key[pygame.K_KP2]:
+                self.attack(target)
+                # Determine which attack type was used
+                if key[pygame.K_KP1]:
+                    self.attack_type = 1
+                if key[pygame.K_KP2]:
+                    self.attack_type = 2
 
-      #check player 2 controls
-      if self.player == 2:
-        #movement
-        if key[pygame.K_LEFT]:
-          dx = -SPEED
-          self.running = True
-        if key[pygame.K_RIGHT]:
-          dx = SPEED
-          self.running = True
-        #jump
-        if key[pygame.K_UP] and self.jump == False:
-          self.vel_y = -30
-          self.jump = True
-        #attack
-        if key[pygame.K_KP1] or key[pygame.K_KP2]:
-          self.attack(target)
-          #determine which attack type was used
-          if key[pygame.K_KP1]:
-            self.attack_type = 1
-          if key[pygame.K_KP2]:
-            self.attack_type = 2
-
-
-    #apply gravity
+    # Apply gravity
     self.vel_y += GRAVITY
     dy += self.vel_y
 
-    #ensure player stays on screen
+    # Ensure player stays on screen
     if self.rect.left + dx < 0:
-      dx = -self.rect.left
+        dx = -self.rect.left
     if self.rect.right + dx > screen_width:
-      dx = screen_width - self.rect.right
+        dx = screen_width - self.rect.right
     if self.rect.bottom + dy > screen_height - 110:
-      self.vel_y = 0
-      self.jump = False
-      dy = screen_height - 110 - self.rect.bottom
+        self.vel_y = 0
+        self.jump = False
+        dy = screen_height - 110 - self.rect.bottom
 
-    #ensure players face each other
+    # Ensure players face each other
     if target.rect.centerx > self.rect.centerx:
-      self.flip = False
+        self.flip = False
     else:
-      self.flip = True
+        self.flip = True
 
-    #apply attack cooldown
+    # Apply attack cooldown
     if self.attack_cooldown > 0:
-      self.attack_cooldown -= 1
+        self.attack_cooldown -= 1
 
-    #update player position
+    # Update player position
     self.rect.x += dx
     self.rect.y += dy
 

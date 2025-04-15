@@ -35,7 +35,7 @@ WIZARD_OFFSET = [112, 107]
 WIZARD_DATA = [WIZARD_SIZE, WIZARD_SCALE, WIZARD_OFFSET]
 
 #load music and sounds
-pygame.mixer.music.load("assets/audio/music.mp3")
+pygame.mixer.music.load("assets/audio/rfs.mp3")
 pygame.mixer.music.set_volume(0.5)
 pygame.mixer.music.play(-1, 0.0, 5000)
 sword_fx = pygame.mixer.Sound("assets/audio/sword.wav")
@@ -44,7 +44,7 @@ magic_fx = pygame.mixer.Sound("assets/audio/magic.wav")
 magic_fx.set_volume(0.75)
 
 #load background image
-bg_image = pygame.image.load("assets/images/background/background.jpg").convert_alpha()
+bg_image = pygame.image.load("assets/images/background/bg.jpg").convert_alpha()
 
 #load spritesheets
 warrior_sheet = pygame.image.load("assets/images/warrior/Sprites/warrior.png").convert_alpha()
@@ -136,8 +136,8 @@ def main(player1_name, player2_name):
         #update countdown
         if intro_count <= 0:
             #move fighters
-            fighter_1.move(SCREEN_WIDTH, SCREEN_HEIGHT, screen, fighter_2, round_over)
-            fighter_2.move(SCREEN_WIDTH, SCREEN_HEIGHT, screen, fighter_1, round_over)
+            fighter_1.move(SCREEN_WIDTH, SCREEN_HEIGHT, screen, fighter_2, round_over, score)
+            fighter_2.move(SCREEN_WIDTH, SCREEN_HEIGHT, screen, fighter_1, round_over, score)
         else:
             #display count timer
             draw_text(str(intro_count), count_font, RED, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 3)
